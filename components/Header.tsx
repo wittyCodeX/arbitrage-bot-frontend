@@ -3,18 +3,46 @@ import { API_URL } from "constants/index";
 
 
 const Header = () => {
-  const [bnbBalance, setBnbBalance] = useState("0");
+  const [baseToken, setBaseToken] = useState("BNB");
   const [tokenBalance, setTokenBalance] = useState("0");
   const [targetSymbol, setTargetSymbol] = useState("BUSD");
-
+  const [baseTokenList, setBaseTokenList] = useState([]);
+  useEffect(() => {
+    fetch(`${API_URL}/get_base_token`)
+      .then((res) => res.json())
+      .then((data) => {
+        setBaseTokenList(data);
+      });
+  }, []);
   useEffect(() => {
     fetch(`${API_URL}/get_target_token`)
     .then((res) => res.json())
     .then((data) => {
-      console.log(data);
       setTargetSymbol(data.symbol);
     });
   }, [])
+
+  const handleBaseTokenChange = (e) => {
+    const currentToken = e.target.value;
+    setBaseToken(currentToken)
+    fetch(`${API_URL}/change_base_token`, {
+      method: 'POST',
+      body: JSON.stringify({
+        token:currentToken
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+        'Access-Control-Allow-Origin': "*"
+      }
+    }).then(res => {
+      alert("Successfly saved the new bot parameters")
+      console.log(res);
+    }).catch(error => {
+      alert("Failed to save the new parameter!");
+      console.error('There was an error!', error);
+  });
+  }
+
   return (
     <header className="p-3 text-white">
       <div className="container">
@@ -29,33 +57,35 @@ const Header = () => {
             </li>
             <li>
               <a href="#" className="nav-link px-2 text-info">
-                BNB:
+                Base Token: 
               </a>
             </li>
             <li>
               <a href="#" className="nav-link px-2 text-bg-warning">
-               {bnbBalance} BNB
+               {baseToken}
               </a>
             </li>
             <li>
               <a href="#" className="nav-link px-2 text-info">
-              {targetSymbol}:
+              Target Token: 
               </a>
             </li>
             <li>
               <a href="#" className="nav-link px-2 text-bg-warning">
-                {tokenBalance} {targetSymbol}
+                {targetSymbol}
               </a>
             </li>
           </ul>
 
-          <div className="text-end">
-            {/* <button type="button" className="btn  btn-success me-2">
-              Recover BNB
-            </button>
-            <button type="button" className="btn btn-info">
-              Recover TOKEN
-            </button> */}
+          <div className="text-end d-inline-flex justify-content-center">
+            <div className="text-primary d-flex justify-content-center  align-items-center">
+              BaseToken: 
+            </div>
+            <select className="form-control m-2" onChange={e => handleBaseTokenChange(e)}>
+              {baseTokenList.length > 0 && baseTokenList.map(baseToken => (
+                <option value={baseToken.sym} key={baseToken.address}>{baseToken.sym}</option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
