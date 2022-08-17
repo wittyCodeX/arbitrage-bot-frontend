@@ -1,43 +1,50 @@
 import { useEffect, useState } from "react";
-import { Pair } from "constants/types";
+import { API_URL } from "constants/index";
 
-const TokenPair = (tokenPairs: Array<Pair>) => {
-const [pairs, setPairs] = useState([]);
+const TokenPair = () => {
+  const [histories, setHistories] = useState([]);
   useEffect(() => {
-    setPairs(tokenPairs)
-  }, [tokenPairs]);
+    fetch(`${API_URL}/get_bot_histories`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log('history: ', data)
+        setHistories(data);
+      });
+  }, []);
   return (
     <table className="table">
       <thead>
         <tr>
-          <th scope="col" rowSpan={2}>TOKEN</th>
-          <th scope="col" rowSpan={2}>PRICE</th>
-          <th scope="col" colSpan={4}>
-            PRICE CHANGE
-          </th>
-          <th scope="col" rowSpan={2}>LIQUIDITY</th>
-          <th scope="col" rowSpan={2}>FDV</th>
-        </tr>
-        <tr>
-          <th scope="col">5M</th>
-          <th scope="col">1H</th>
-          <th scope="col">6H</th>
-          <th scope="col">24H</th>
+          <th scope="col">TXHASH</th>
+          <th scope="col">DEX FROM</th>
+          <th scope="col">DEX TO</th>
+          <th scope="col">BASE_TOKEN</th>
+          <th scope="col">TARGET_TOKEN</th>
+          <th scope="col">AMOUNT_IN</th>
+          <th scope="col">AMOUNT_OUT</th>
+          <th scope="col">PROFIT</th>
+          <th scope="col">GAS_USED</th>
+          <th scope="col">DATE_TIME</th>
         </tr>
       </thead>
       <tbody>
-        {pairs.length > 0 && pairs.map(pair => (
+        {histories.length > 0 &&
+          histories.map((history) => (
             <tr>
-                <td>{pair.dexId} - {pair.baseToken.symbol}/{pairs.quoteToken.symbol} <strong>{pair.baseToken.name}</strong></td>
-                <td>{pair.priceUsd}</td>
-                <td className={pair.priceChange.m5 > 0? 'text-green': 'text-danger'}>{pair.priceChange.m5}</td>
-                <td className={pair.priceChange.h1 > 0? 'text-green': 'text-danger'}>{pair.priceChange.h1}</td>
-                <td className={pair.priceChange.h6 > 0? 'text-green': 'text-danger'}>{pair.priceChange.h6}</td>
-                <td className={pair.priceChange.h24 > 0? 'text-green': 'text-danger'}>{pair.priceChange.h24}</td>
-                <td>{pair.liquidity.usd}</td>
-                <td>{pair.fdv}</td>
+              <td>
+                <a href={`https://bscscan.com/tx/${history.txHash}`} target="blank">{history.txHash.substring(0, 5)}</a>
+              </td>
+              <td>{history.dex_from}</td>
+              <td>{history.dex_to}</td>
+              <td>{history.base_token}</td>
+              <td>{history.target_token}</td>
+              <td>{history.amount_in}</td>
+              <td>{history.amount_out}</td>
+              <td>{history.profit}</td>
+              <td>{history.gas_used}</td>
+              <td>{history.datetime}</td>
             </tr>
-        ))}
+          ))}
       </tbody>
     </table>
   );

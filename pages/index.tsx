@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import TokenPair from "components/TokenPair";
 import { API_URL } from "../constants/index";
+
 // import styles from "../styles/Home.module.css";
 
 export default function Home({}) {
@@ -14,9 +15,35 @@ export default function Home({}) {
   const [timeLimit, setTimeLimit] = useState("");
   const [bnbAmount, setBnbAmount] = useState("");
 
-  const [tokenPairs, setTokenPairs] = useState([]);
   const saveSetting = (e) => {
+    e.preventDefault();
+    if (slippage == "" || gasPrice == "" ||gasLimit == "" ||profit == "" ||liquidity == "" ||timeLimit == "" ||bnbAmount == "") {
+      alert("invalid parameter!");
+      return;
+    }
+    fetch(`${API_URL}/save_config`, {
+      method: 'POST',
+      body: JSON.stringify({
+        slippage:slippage,
+        gas_price:gasPrice,
+        gas_limit:gasLimit,
+        profit:profit,
+        liquidity:liquidity,
+        time_limit:timeLimit,
+        bnb_amount:bnbAmount
 
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+        'Access-Control-Allow-Origin': "*"
+      }
+    }).then(res => {
+      alert("Successfly saved the new bot parameters")
+      console.log(res);
+    }).catch(error => {
+      alert("Failed to save the new parameter!");
+      console.error('There was an error!', error);
+  });
   };
 // slippage, gas_price, gas_limit, profit, liquidity, time_limit, bnb_amount
   useEffect(() => {
@@ -150,7 +177,7 @@ export default function Home({}) {
               name=""
               id="bnbAmount"
               className="form-control"
-              value={profit}
+              value={bnbAmount}
               onChange={(e) => {
                 setBnbAmount(e.target.value);
               }}
@@ -168,8 +195,8 @@ export default function Home({}) {
           </div>
         </div>
         <div className="col-md-8 col-sm-12 col-12 col-lg-9 p-5">
-          <h1>Market Status</h1>
-          <TokenPair {...tokenPairs}/>
+          <h1>Bot History</h1>
+          <TokenPair />
         </div>
       </main>
     </div>

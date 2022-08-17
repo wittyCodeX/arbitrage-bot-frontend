@@ -15,15 +15,6 @@ const Header = () => {
       setTargetSymbol(data.symbol);
     });
   }, [])
-  useEffect(() => {
-    fetch(`${API_URL}/get_balance`)
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data);
-      setBnbBalance(data.bnb);
-      setTokenBalance(data.token);
-    });
-  }, [])
   return (
     <header className="p-3 text-white">
       <div className="container">
@@ -59,12 +50,12 @@ const Header = () => {
           </ul>
 
           <div className="text-end">
-            <button type="button" className="btn  btn-success me-2">
+            {/* <button type="button" className="btn  btn-success me-2">
               Recover BNB
             </button>
             <button type="button" className="btn btn-info">
               Recover TOKEN
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
