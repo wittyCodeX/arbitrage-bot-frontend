@@ -7,6 +7,7 @@ const Header = () => {
   const [tokenBalance, setTokenBalance] = useState("0");
   const [targetSymbol, setTargetSymbol] = useState("BUSD");
   const [baseTokenList, setBaseTokenList] = useState([]);
+  const [defaultValue, setDefaultValue] = useState("BNB")
   useEffect(() => {
     fetch(`${API_URL}/get_base_token`)
       .then((res) => res.json())
@@ -19,6 +20,7 @@ const Header = () => {
     .then((res) => res.json())
     .then((data) => {
       setTargetSymbol(data.symbol);
+      setDefaultValue(data.basetoken.sym)
     });
   }, [])
 
@@ -74,7 +76,7 @@ const Header = () => {
             <div className="text-primary d-flex justify-content-center  align-items-center">
               BaseToken: 
             </div>
-            <select className="form-control m-2" onChange={e => handleBaseTokenChange(e)}>
+            <select className="form-control m-2" onChange={e => handleBaseTokenChange(e)} defaultValue={defaultValue}>
               {baseTokenList.length > 0 && baseTokenList.map(baseToken => (
                 <option value={baseToken.sym} key={baseToken.address}>{baseToken.sym}</option>
               ))}
