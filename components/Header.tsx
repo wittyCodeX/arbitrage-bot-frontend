@@ -25,15 +25,8 @@ const Header = () => {
   const handleBaseTokenChange = (e) => {
     const currentToken = e.target.value;
     setBaseToken(currentToken)
-    fetch(`${API_URL}/change_base_token`, {
+    fetch(`${API_URL}/change_base_token?token=${currentToken}`, {
       method: 'POST',
-      body: JSON.stringify({
-        token:currentToken
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-        'Access-Control-Allow-Origin': "*"
-      }
     }).then(res => {
       alert("Successfly saved the new bot parameters")
       console.log(res);

@@ -21,22 +21,8 @@ export default function Home({}) {
       alert("invalid parameter!");
       return;
     }
-    fetch(`${API_URL}/save_config`, {
+    fetch(`${API_URL}/save_config?slippage=${slippage}&gas_price=${gasPrice}&gas_limit=${gasLimit}&profit=${profit}&liquidity=${liquidity}&time_limit=${timeLimit}&bnb_amount=${bnbAmount}`, {
       method: 'POST',
-      body: JSON.stringify({
-        slippage:slippage,
-        gas_price:gasPrice,
-        gas_limit:gasLimit,
-        profit:profit,
-        liquidity:liquidity,
-        time_limit:timeLimit,
-        bnb_amount:bnbAmount
-
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-        'Access-Control-Allow-Origin': "*"
-      }
     }).then(res => {
       alert("Successfly saved the new bot parameters")
       console.log(res);
